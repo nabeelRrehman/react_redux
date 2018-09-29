@@ -1,0 +1,39 @@
+
+    /* HomePage CSS */
+
+.homepage{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 5px;
+    flex-basis: 100%;
+    border: 2px solid black;
+}
+.homepage h1{
+    /* border: 1px solid green; */
+    flex-grow: 2;
+}
+.homepage div{
+    /* border: 1px solid green; */
+    padding-top: 1.7em;
+    flex-grow: 0.5; 
+}
+.homepage div>button{
+    padding: 10px 15px 10px 15px;
+    border-radius: 3px;
+    border: 1px solid grey;
+}
+.homepage div>button:hover {
+    border: 1px solid white;
+    background-color: #bfbcbc;
+    box-shadow: 0px 0px 1px 4px #bfbcbc;
+    color: white;
+    cursor: pointer;
+}
+.profile_pic{
+    width: 50px;
+    border-radius: 50%;
+}
+.profile_pic_div{
+    
+}
