@@ -63,7 +63,7 @@ class Login extends Component {
 
     // facebook Authentication with firebase
 
-    fbAuth() {                                              
+    fbAuth() {
         const fb_provider = new firebase.auth.FacebookAuthProvider()
         firebase.auth().signInWithPopup(fb_provider)
             .then(success => {
@@ -71,9 +71,42 @@ class Login extends Component {
                 localStorage.setItem('user', true)
                 this.props.history.push('/home')
                 this._changeData(pic)
-                localStorage.setItem("profile_pic",pic)   //set user's profile_pic in localStorage
+                localStorage.setItem("profile_pic", pic)   //set user's profile_pic in localStorage
             })
-            .catch(error => console.log(error.message))
+            .catch(error => {
+                firebase.auth().currentUser.linkWithPopup(fb_provider).then(function (result) {
+                    // Accounts successfully linked.
+                    var credential = result.credential;
+                    var user = result.user;
+                    console.log(credential)
+                    console.log(user)
+
+
+                    var prevUser = firebase.auth().currentUser;
+                    // Sign in user with another account
+                    firebase.auth().signInWithCredential(credential).then(function (user) {
+                        console.log("Sign In Success", user);
+                        var currentUser = user;
+                        // Merge prevUser and currentUser data stored in Firebase.
+                        // Note: How you handle this is specific to your application
+
+                        // After data is migrated delete the duplicate user
+                        return user.delete().then(function () {
+                            // Link the OAuth Credential to original account
+                            return prevUser.linkWithCredential(credential);
+                        }).then(function () {
+                            // Sign in with the newly linked credential
+                            return firebase.auth().signInWithCredential(credential);
+                        });
+                    }).catch(function (error) {
+                        console.log("Sign In Error", error);
+                    });
+                    // ...
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    // ...
+                });
+            })
     }
 
     _changeData(profile_pic) {
@@ -93,7 +126,7 @@ class Login extends Component {
                 localStorage.setItem('user', true)
                 this.props.history.push('/home')
                 this._changeData(pic)
-                localStorage.setItem("profile_pic",pic)         //set user's profile_pic in localStorage
+                localStorage.setItem("profile_pic", pic)         //set user's profile_pic in localStorage
             })
             .catch(error => alert(error.message))
     }

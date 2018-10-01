@@ -33,7 +33,7 @@ class Home extends Component {
         return (
             <div className = 'homepage'>
                 <h1>Homepage</h1>
-                <div className='profile_pic_div'><img className = {'profile_pic'} src = {this.props.profile_pic || localStorage.getItem('profile_pic')} /></div>
+                <div className='profile_pic_div'><img alt={'profile_pic'} className = {'profile_pic'} src = {this.props.profile_pic || localStorage.getItem('profile_pic')} /></div>
                 <div>
                     <button onClick = {this.logout.bind(this)}>Logout</button>
                 </div>

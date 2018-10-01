@@ -7,9 +7,9 @@ class SignUp extends Component {
     constructor() {
         super()
         this.state = {
-            name : '',
-            email : '',
-            password : ''
+            name: '',
+            email: '',
+            password: ''
         }
     }
     // redirected user to Login Page
@@ -84,41 +84,58 @@ class SignUp extends Component {
 
     // signup Authentication using firebase
 
-    signUpAuth(){
-        const {email,password} = this.state
+    signUpAuth() {
+        const { email, password } = this.state
         email && password ?
-        swal({
-            onOpen: () => {
-                swal.showLoading()
-            }
-        })+
-        firebase.auth().createUserWithEmailAndPassword(email,password)
-        .then(()=>{
             swal({
-                position: 'center',
-                type: 'success',
-                title: 'Successfully registered',
-                showConfirmButton: false,
-                timer: 1500
-              })
-            setTimeout(()=>{
-                this.props.history.push('/')
-            },1500)
-        })
-        .catch((error)=>{
-            swal({
-                type: 'error',
-                title: error.message,
-              })
-        }):
-        alert('write Something')
-        
+                onOpen: () => {
+                    swal.showLoading()
+                }
+            }) +
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    swal({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Successfully registered',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    setTimeout(() => {
+                        this.props.history.push('/')
+                    }, 1500)
+                })
+                .catch((error) => {
+                    var credential = firebase.auth.EmailAuthProvider.credential(email, password);
+                    firebase.auth().currentUser.linkAndRetrieveDataWithCredential(credential).then(function (usercred) {
+                        var user = usercred.user;
+                        console.log("Account linking success", user);
+                        swal({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Successfully Linked Account',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setTimeout(() => {
+                            this.props.history.push('/')
+                        }, 1500)
+                    }, function (error) {
+                        swal({
+                            type: 'error',
+                            title: 'Successfully Linked Account',
+                            showConfirmButton: true
+                        })
+                    });
+                }) :
+            alert('write Something')
+
     }
     // SignUp Page JSX
     render() {
         return (
             <div>
-                <div className = 'header'>
+                <div className='header'>
                     <h1>SignUp</h1>
                 </div>
                 <div className='main-container'>
@@ -134,19 +151,19 @@ class SignUp extends Component {
                                 SIGN UP HERE
                         </div>
                             <div className='input-fields'>
-                                <input type='text' placeholder='Name*' onChange={(e) => this.setState({name : e.target.value})} />
+                                <input type='text' placeholder='Name*' onChange={(e) => this.setState({ name: e.target.value })} />
                                 <br />
-                                <span id ='err' />
+                                <span id='err' />
                             </div>
                             <div className='input-fields'>
                                 <input type='email' placeholder='Email*' onChange={(e) => this.email(e.target.value)} />
                                 <br />
-                                <span id ='emailErr' />
+                                <span id='emailErr' />
                             </div>
                             <div className='input-fields'>
                                 <input type='password' placeholder='Password*' onChange={(e) => this.password(e.target.value)} />
                                 <br />
-                                <span id ='passwordErr' />
+                                <span id='passwordErr' />
                             </div>
                             <div className='input-fields'>
                                 <button className='button' onClick={this.signUpAuth.bind(this)}>Sign Up</button>
