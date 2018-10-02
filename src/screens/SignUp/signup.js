@@ -85,15 +85,21 @@ class SignUp extends Component {
     // signup Authentication using firebase
 
     signUpAuth() {
-        const { email, password } = this.state
-        email && password ?
+        const { email, password,role } = this.state
+        email && password && role ?
             swal({
                 onOpen: () => {
                     swal.showLoading()
                 }
             }) +
             firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then(() => {
+                .then((success) => {
+                    const details = {
+                        email : email,
+                        userUid : success.user.uid,
+                        role : role
+                    }
+                    firebase.database().ref('/users/'+success.user.uid+'/userDetails').push(details)
                     swal({
                         position: 'center',
                         type: 'success',
@@ -106,29 +112,13 @@ class SignUp extends Component {
                     }, 1500)
                 })
                 .catch((error) => {
-                    var credential = firebase.auth.EmailAuthProvider.credential(email, password);
-                    firebase.auth().currentUser.linkAndRetrieveDataWithCredential(credential).then(function (usercred) {
-                        var user = usercred.user;
-                        console.log("Account linking success", user);
-                        swal({
-                            position: 'center',
-                            type: 'success',
-                            title: 'Successfully Linked Account',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        setTimeout(() => {
-                            this.props.history.push('/')
-                        }, 1500)
-                    }, function (error) {
-                        swal({
-                            type: 'error',
-                            title: 'Successfully Linked Account',
-                            showConfirmButton: true
-                        })
-                    });
+                    swal({
+                        type: 'error',
+                        title: error.message,
+                    })
+                    this.setState({name:'',email :'',password :''})
                 }) :
-            alert('write Something')
+            alert('Something went wrong')
 
     }
     // SignUp Page JSX
@@ -164,6 +154,15 @@ class SignUp extends Component {
                                 <input type='password' placeholder='Password*' onChange={(e) => this.password(e.target.value)} />
                                 <br />
                                 <span id='passwordErr' />
+                            </div>
+                            <div className='radioBtn'>
+                                <div>
+                                    <input type='radio' value = {'attendee'} onChange={() => this.setState({role : 'attendee'})} name = {'role'}/>Attendee
+                                </div>
+                                <div>
+                                    <input type='radio' value = {'organizer'} onChange={() => this.setState({role : 'organizer'})} name = {'role'}/>Organizer
+                                </div>
+                                <br />
                             </div>
                             <div className='input-fields'>
                                 <button className='button' onClick={this.signUpAuth.bind(this)}>Sign Up</button>

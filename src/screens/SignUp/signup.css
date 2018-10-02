@@ -156,3 +156,11 @@ body{
   .header{
 
   }
+.radioBtn{
+    margin: 10px 0em 10px 20px;
+    color: white;
+}
+.radioBtn div{
+    display: inline;
+    margin-left: 30px;
+}

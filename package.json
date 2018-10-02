@@ -15,7 +15,12 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "sweetalert": "^2.1.0",
-    "sweetalert2": "^7.26.29"
+    "sweetalert2": "^7.26.29",
+    "@fortawesome/fontawesome-free": "^5.3.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.4",
+    "@fortawesome/free-solid-svg-icons": "^5.3.1",
+    "@fortawesome/react-fontawesome": "^0.1.2",
+    "fontawesome": "^4.7.2"
   },
   "scripts": {
     "start": "react-scripts start",

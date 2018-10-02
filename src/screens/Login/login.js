@@ -40,8 +40,9 @@ class Login extends Component {
                 },
             }) +
             firebase.auth().signInWithEmailAndPassword(email, password)
-                .then(() => {
+                .then((success) => {
                     localStorage.setItem('user', true)
+                    localStorage.setItem('userUid',success.user.uid)
                     swal({                          //sweetalert library 
                         position: 'center',
                         type: 'success',
@@ -52,10 +53,53 @@ class Login extends Component {
                     setTimeout(() => {
                         this.props.history.push('/home')
                     }, 1500)
-                }).catch(error => swal({                          //sweetalert library 
-                    type: 'error',
-                    title: error.message,
-                }))
+                }).catch(error => {
+                    var credential = firebase.auth.EmailAuthProvider.credential(email, password);
+                    firebase.auth().currentUser.linkAndRetrieveDataWithCredential(credential).then(function (usercred) {
+                        var user = usercred.user;
+                        localStorage.setItem('user', true)
+                        const pic = user.photoURL
+                        console.log("Account linking success", user);
+
+                        swal({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Successfully Linked Account',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setTimeout(() => {
+                            this.props.history.push('/home')
+                        }, 1500)
+                    }, function (error) {
+                        var prevUser = firebase.auth().currentUser;
+                        // Sign in user with another account
+                        firebase.auth().signInWithCredential(credential).then(function (user) {
+                            console.log("Sign In Success", user);
+                            var currentUser = user;
+                            // Merge prevUser and currentUser data stored in Firebase.
+                            // Note: How you handle this is specific to your application
+
+                            // After data is migrated delete the duplicate user
+                            return user.delete().then(function () {
+                                // Link the OAuth Credential to original account
+                                return prevUser.linkWithCredential(credential);
+                            }).then(function () {
+                                // Sign in with the newly linked credential
+                                return firebase.auth().signInWithCredential(credential);
+                            });
+                        }).catch(function (error) {
+                            console.log("Sign In Error", error);
+                            swal({
+                                type: 'error',
+                                title: error.message,
+                                showConfirmButton: true
+                            })
+                        });
+
+
+                    });
+                })
             :
             alert('fill the fields')
 
@@ -74,13 +118,13 @@ class Login extends Component {
                 localStorage.setItem("profile_pic", pic)   //set user's profile_pic in localStorage
             })
             .catch(error => {
+                console.log(error)
                 firebase.auth().currentUser.linkWithPopup(fb_provider).then(function (result) {
                     // Accounts successfully linked.
                     var credential = result.credential;
                     var user = result.user;
                     console.log(credential)
                     console.log(user)
-
 
                     var prevUser = firebase.auth().currentUser;
                     // Sign in user with another account
@@ -100,10 +144,19 @@ class Login extends Component {
                         });
                     }).catch(function (error) {
                         console.log("Sign In Error", error);
+                        swal({
+                            type: 'error',
+                            title: error.message,
+                            showConfirmButton: true
+                        })
                     });
                     // ...
                 }).catch(function (error) {
                     // Handle Errors here.
+                    swal({
+                        type: 'error',
+                        title: error.message,
+                    })
                     // ...
                 });
             })

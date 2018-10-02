@@ -6,10 +6,9 @@ import Login from './screens/Login/login';
 import SignUp from './screens/SignUp/signup';
 import home from './components/home';
 
+
 class Routers extends Component {
-    constructor() {
-        super()
-    }
+    
     render() {
         return (
             <Router history={history}>
