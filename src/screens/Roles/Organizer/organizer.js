@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import AddEvent from '../../../components/addEvent/addevent';
+import EventCard from '../../../components/EventCard/eventCard';
 library.add(faPlus)
 library.add(faTimes)
 
@@ -18,7 +19,7 @@ class Organizer extends Component {
         super()
 
         this.state = {
-            addForm: true           //false krna ha 
+            addForm: false
         }
     }
 
@@ -39,8 +40,9 @@ class Organizer extends Component {
         const { addForm } = this.state
         return (
             <div>
-                <h1>Organizer</h1>
+                <h1>All Events</h1>
                 {addForm && <AddEvent />}
+                {<EventCard />}
                 {this.renderAddBtn()}
             </div>
         )

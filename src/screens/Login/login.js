@@ -58,7 +58,6 @@ class Login extends Component {
                     firebase.auth().currentUser.linkAndRetrieveDataWithCredential(credential).then(function (usercred) {
                         var user = usercred.user;
                         localStorage.setItem('user', true)
-                        const pic = user.photoURL
                         console.log("Account linking success", user);
 
                         swal({
@@ -76,7 +75,6 @@ class Login extends Component {
                         // Sign in user with another account
                         firebase.auth().signInWithCredential(credential).then(function (user) {
                             console.log("Sign In Success", user);
-                            var currentUser = user;
                             // Merge prevUser and currentUser data stored in Firebase.
                             // Note: How you handle this is specific to your application
 
@@ -130,7 +128,6 @@ class Login extends Component {
                     // Sign in user with another account
                     firebase.auth().signInWithCredential(credential).then(function (user) {
                         console.log("Sign In Success", user);
-                        var currentUser = user;
                         // Merge prevUser and currentUser data stored in Firebase.
                         // Note: How you handle this is specific to your application
 

@@ -8,7 +8,6 @@ import firebase from 'firebase'
 import Attendee from '../screens/Roles/Attendee/attendee';
 import Organizer from '../screens/Roles/Organizer/organizer';
 import swal from 'sweetalert2'
-import AddEvent from './addEvent/addevent';
 
 
 class Home extends Component {
