@@ -37,12 +37,13 @@ class Organizer extends Component {
     }
 
     render() {
+        const user = localStorage.getItem('userUid')
         const { addForm } = this.state
         return (
             <div>
-                <h1>All Events</h1>
+                {!addForm && <h1>All Events</h1>}
                 {addForm && <AddEvent />}
-                {<EventCard />}
+                {!addForm && <EventCard user = {user}/>}
                 {this.renderAddBtn()}
             </div>
         )

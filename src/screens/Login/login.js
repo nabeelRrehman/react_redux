@@ -16,6 +16,7 @@ class Login extends Component {
             password: '',
             profile_pic: ''
         }
+        this.checkRole = this.checkRole.bind(this)
     }
     //initially get the user from localstorage
 
@@ -32,6 +33,7 @@ class Login extends Component {
 
     //login Authentication with email and password
     login() {
+        const that = this
         const { email, password } = this.state
         email && password ?
             swal({
@@ -42,7 +44,7 @@ class Login extends Component {
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((success) => {
                     localStorage.setItem('user', true)
-                    localStorage.setItem('userUid',success.user.uid)
+                    localStorage.setItem('userUid', success.user.uid)
                     swal({                          //sweetalert library 
                         position: 'center',
                         type: 'success',
@@ -67,14 +69,16 @@ class Login extends Component {
                             showConfirmButton: false,
                             timer: 1500
                         })
-                        setTimeout(() => {
-                            this.props.history.push('/home')
-                        }, 1500)
+                        localStorage.setItem("userUid", user.uid)
+                        that.checkRole(user.uid)
                     }, function (error) {
                         var prevUser = firebase.auth().currentUser;
                         // Sign in user with another account
                         firebase.auth().signInWithCredential(credential).then(function (user) {
                             console.log("Sign In Success", user);
+                            var currentUser = user;
+                            localStorage.setItem('user', true)
+
                             // Merge prevUser and currentUser data stored in Firebase.
                             // Note: How you handle this is specific to your application
 
@@ -103,6 +107,19 @@ class Login extends Component {
 
     }
 
+    checkRole(user) {
+        firebase.database().ref('/users/').on('value', (snapShot) => {
+            console.log(snapShot.val())
+            if (!snapShot.val()[user]) {
+                console.log('nhi mila')
+                this.props.history.push('/role')
+            } else {
+                console.log('mil gaya')
+                this.props.history.push('/home')
+            }
+        })
+    }
+
     // facebook Authentication with firebase
 
     fbAuth() {
@@ -111,11 +128,14 @@ class Login extends Component {
             .then(success => {
                 const pic = success.additionalUserInfo.profile.picture.data.url
                 localStorage.setItem('user', true)
-                this.props.history.push('/home')
                 this._changeData(pic)
                 localStorage.setItem("profile_pic", pic)   //set user's profile_pic in localStorage
+                console.log(success)
+                localStorage.setItem("userUid", success.user.uid)
+                this.checkRole(success.user.uid)
             })
             .catch(error => {
+                let that = this
                 console.log(error)
                 firebase.auth().currentUser.linkWithPopup(fb_provider).then(function (result) {
                     // Accounts successfully linked.
@@ -128,17 +148,33 @@ class Login extends Component {
                     // Sign in user with another account
                     firebase.auth().signInWithCredential(credential).then(function (user) {
                         console.log("Sign In Success", user);
+                        var currentUser = user;
                         // Merge prevUser and currentUser data stored in Firebase.
-                        // Note: How you handle this is specific to your application
+                        // Note: How you handle this is specific to your application 
 
+                        return firebase.auth().signInWithCredential(credential)
+                            .then((success) => {
+                                console.log(success)
+                                localStorage.setItem('user', true)
+                                localStorage.setItem("userUid", success.uid)
+                                swal({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Successfully Login',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                that.checkRole(success.uid)
+                                localStorage.setItem("userUid", success.uid)
+                                this._changeData(success.photoURL)
+                            })
                         // After data is migrated delete the duplicate user
-                        return user.delete().then(function () {
-                            // Link the OAuth Credential to original account
-                            return prevUser.linkWithCredential(credential);
-                        }).then(function () {
-                            // Sign in with the newly linked credential
-                            return firebase.auth().signInWithCredential(credential);
-                        });
+                        // return user.delete().then(function () {
+                        //     // Link the OAuth Credential to original account
+                        //     return prevUser.linkWithCredential(credential);
+                        // }).then(function () {
+                        //     // Sign in with the newly linked credential
+                        // });
                     }).catch(function (error) {
                         console.log("Sign In Error", error);
                         swal({
@@ -174,9 +210,10 @@ class Login extends Component {
                 const pic = success.additionalUserInfo.profile.picture
                 console.log(success)
                 localStorage.setItem('user', true)
-                this.props.history.push('/home')
                 this._changeData(pic)
                 localStorage.setItem("profile_pic", pic)         //set user's profile_pic in localStorage
+                this.checkRole(success.user.uid)
+                localStorage.setItem("userUid", success.user.uid)
             })
             .catch(error => alert(error.message))
     }

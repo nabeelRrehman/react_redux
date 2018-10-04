@@ -8,6 +8,7 @@ import firebase from 'firebase'
 import Attendee from '../screens/Roles/Attendee/attendee';
 import Organizer from '../screens/Roles/Organizer/organizer';
 import swal from 'sweetalert2'
+import Role from './EventCard/Role/role';
 
 
 class Home extends Component {
@@ -40,7 +41,7 @@ class Home extends Component {
             })
             firebase.database().ref('users/' + userUid + '/userDetails/').once('child_added', (snapShot) => {
                 console.log(snapShot.val())
-                this.setState({ role: snapShot.val().role })
+                this.setState({ role: snapShot.val().role})
                 swal({
                     showConfirmButton: false,
                     timer: 100
@@ -61,6 +62,7 @@ class Home extends Component {
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
                 {role === 'attendee' && <Attendee />}
                 {role === 'organizer' && <Organizer />}
+                {/* {!role && <Role />} */}
             </Container>
         )
     }

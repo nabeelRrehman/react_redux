@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import image from '../../Assets/images/index.png'
 import './eventCard.css'
 import firebase from 'firebase'
-import { toHtml } from '@fortawesome/fontawesome-svg-core';
 
 
 class EventCard extends Component {
@@ -19,7 +17,7 @@ class EventCard extends Component {
         const { event } = this.state
         const user = localStorage.getItem('userUid')
         user &&
-            firebase.database().ref('/events/').on('child_added', (snapShot) => {
+            firebase.database().ref('/events/'+this.props.user+'/').on('child_added', (snapShot) => {
                 const data = snapShot.val()
                 const card = {
                     image: data.imageUrl,
@@ -28,12 +26,13 @@ class EventCard extends Component {
                     ticket: data.ticket
                 }
                 event.push(card)
-                this.setState({ event })
             })
+            this.setState({ event })
 
     }
 
     eventCard(image, title, description, ticket,index) {
+        const {attendee} = this.props
         return (
             <div className='event-card' key = {`${index}`}>
                 <div className='event-card-img'>
@@ -46,8 +45,12 @@ class EventCard extends Component {
                     <p>{description}</p>
                 </div>
                 <div className='event-card-footer'>
-                    <button>Learn more</button>
-                    <button>Buy</button>
+                    {
+                        attendee ? <button>Learn more</button> : <button>Detail</button> 
+                    }
+                    {
+                        attendee && <button>Buy</button>
+                    }
                     <span><b>Ticket</b> : {ticket}</span>
                 </div>
             </div>

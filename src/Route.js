@@ -5,6 +5,7 @@ import history from './History'
 import Login from './screens/Login/login';
 import SignUp from './screens/SignUp/signup';
 import home from './components/home';
+import Role from './components/EventCard/Role/role';
 
 
 class Routers extends Component {
@@ -16,6 +17,7 @@ class Routers extends Component {
                     <Route exact path="/" component={Login} />
                     <Route exact path="/signup" component={SignUp} />
                     <Route path = '/home' component = {home}/>
+                    <Route path = '/role' component = {Role}/>
                 </div>
             </Router>
         )

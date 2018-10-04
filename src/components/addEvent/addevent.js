@@ -42,7 +42,7 @@ class AddEvent extends Component {
                 name, detail, location, startTime, endTime, imageUrl, userUid, address, ticket, price , arrangement, seats
             }
             if (ticket === 'paid' && price || ticket === 'free' && !price) {
-                firebase.database().ref('/events/').push(obj)
+                firebase.database().ref('/events/'+userUid+'/').push(obj)
                 .then(()=>{
                     swal({
                         position: 'center',
@@ -51,6 +51,10 @@ class AddEvent extends Component {
                         showConfirmButton: false,
                         timer: 1500
                     })
+                    this.setState({name:'',detail:'',location:'',startTime:'',
+                    endTime:'',imageUrl:'',address:'',ticket:'',price:'',
+                    arrangement:'',seats:''})
+
                 }).catch((error)=>{
                     swal({
                         type: 'error',
