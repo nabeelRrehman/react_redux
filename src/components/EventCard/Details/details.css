@@ -1,0 +1,74 @@
+.event-details{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-basis: 100%;
+    border: 1px solid black;
+    margin-top: 3em;
+}
+.event-name{
+    font-size: 24px;
+    font-weight: 700;
+    padding: 15px;
+    flex-basis: 100%;
+}
+.ticket-detail,.siting-arrange{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 12px;
+    /* order: 2; */
+    flex-basis: 25%;
+    border: 1px solid black;
+    flex-grow: 1;
+}
+.ticket-detail div:nth-child(odd),.siting-arrange div:nth-child(odd){
+    font-weight: 600;
+    font-size: 20px;
+}
+.ticket-detail div:nth-child(even),.siting-arrange div:nth-child(even){
+    color: grey;
+}
+.ticket-detail div{
+    padding: 7px;
+    flex-basis: 100%;
+}
+.event-pic{
+    padding: 10px;
+    min-width: 30%;
+    flex-grow: 2;
+    width: 40%;
+    border: 1px solid black;
+}
+.siting-arrange div{
+    padding: 7px;
+    flex-grow: 1;
+    flex-basis: 100%;
+}
+.event{
+    display: flex;
+}
+.event-detail-btn {
+    flex-basis: 100%;
+    order: 4;
+    padding: 10px;
+}
+.event-detail-btn button {
+    margin: 10px 5px 10px 5px;
+    padding: 10px 15px 10px 15px;
+    background-color: #24333c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+@media (max-width: 770px) {
+    .siting-arrange{
+        order: 2;
+        transition: 1s;
+    }
+}
+@media (max-width: 600px) {
+    .event-details div:nth-child(3) {
+        flex-basis: 100%;
+    }
+}

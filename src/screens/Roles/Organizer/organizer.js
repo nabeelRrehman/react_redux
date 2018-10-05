@@ -43,7 +43,7 @@ class Organizer extends Component {
             <div>
                 {!addForm && <h1>All Events</h1>}
                 {addForm && <AddEvent />}
-                {!addForm && <EventCard user = {user}/>}
+                {!addForm && <EventCard user = {user} attendee = {false}/>}
                 {this.renderAddBtn()}
             </div>
         )

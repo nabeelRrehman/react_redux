@@ -13,8 +13,8 @@
 }
 .homepage h1{
     /* border: 1px solid green; */
-    flex-grow: 1;
-    padding-left: 10%;
+    flex-grow: 3;
+    /* padding-left: 10%; */
 }
 .homepage div{
     /* border: 1px solid green; */
@@ -39,6 +39,20 @@
     border-radius: 50%;
     cursor: pointer;
 }
+.home-icon{
+    color: white;
+    flex-grow: 1;
+}
+.icon{
+    background-color: grey;
+    padding: 10px;
+    border-radius: 20%;
+}
+.icon:hover{
+    transition: 1s;
+    cursor: pointer;
+    transform: scale(1.04)
+}
 .profile_pic_div{
     padding-right: 3em;
 }
@@ -48,8 +62,12 @@
     }
     .homepage div{
         padding-top: 0.5em;
+        order: 1;
     }
     .homepage{
         justify-content: flex-end;
+    }
+    .home-icon{
+        align-self: center;
     }
 }
