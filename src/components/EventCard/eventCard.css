@@ -64,6 +64,15 @@
     border: none;
     cursor: pointer;
 }
+.linked{
+    margin: 10px 5px 10px 5px;
+    padding: 10px 15px 10px 15px;
+    background-color: #24333c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    visibility: hidden;
+}
 .event-card-footer span{
     margin-left: 1em;
 }

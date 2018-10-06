@@ -56,11 +56,20 @@ class EventCard extends Component {
                 </div>
                 <div className='event-card-footer'>
                     {
-                        attendee && <button onClick={() => console.log('buy ho rha ha')} disabled={seats == 0 && 'disabled'} className={seats == 0 ? 'btnToggle' : ''}>Buy</button>
+                        attendee && <button disabled={seats == 0 && 'disabled'} className={seats == 0 ? 'btnToggle' : ''}>
+                        {
+                            seats == 0 ?
+                            'Sold':
+                            <Link to={`${'/buy/'}${key}`} style={{color: 'white',textDecoration: 'none'}}>Buy</Link>
+                        }
+                        </button>
+                    }
+                    {
+                        !attendee && <button className = 'linked'>buy</button>
                     }
                     {
                         // <button >Detail</button>
-                        <Link to={`${'/details/'}${key}`} className='link'>Details</Link>
+                        <Link to={`${'/details/'}${key}`} className={'link'}>Details</Link>
                     }
                     <span><b>Ticket</b> : {!price && ticket}</span>
                     {

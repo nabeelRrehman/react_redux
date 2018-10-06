@@ -25,7 +25,6 @@ class Details extends Component {
     }
 
     componentDidMount() {
-        const { event } = this.state
         const { id } = this.props.match.params
         // console.log('id***',id)
         firebase.database().ref('/events/').on('value', (snapShot) => {
@@ -96,10 +95,10 @@ class Details extends Component {
                                 {event.endTime}
                             </div>
                             <div>
-                                Seats:
+                                Seats/Left:
                         </div>
                             <div>
-                                {event.seats}
+                                {event.seats}/{'6'}
                             </div>
                             <div>
                                 Price Per Ticket:
