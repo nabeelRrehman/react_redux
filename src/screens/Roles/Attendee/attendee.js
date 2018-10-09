@@ -9,12 +9,14 @@ class Attendee extends Component {
         super()
 
         this.state = {
-            events: []
+            events: [],
+            going: [],
+            notgoing : []
         }
     }
 
     componentDidMount() {
-        const { events } = this.state
+        const { events} = this.state
         const user = localStorage.getItem('userUid')
         user &&
             firebase.database().ref('/events/').on('child_added', (snapShot) => {
@@ -22,13 +24,16 @@ class Attendee extends Component {
                 events.push(snapShot.key)
                 this.setState({ events })
             })
+        
     }
 
     render() {
-        const { events } = this.state
+        const { events, going,notgoing } = this.state
         return (
             <div>
-                <h1>Attendee</h1>
+                <div>
+                    <h1 value='abc'>All Event</h1>
+                </div>
                 <div className='userInterest'>
                     <div>
                         <Link to='/home/going' className='going'>Going</Link>
@@ -38,7 +43,7 @@ class Attendee extends Component {
                     </div>
                 </div>
                 {events.length > 0 && events.map((items, index) => {
-                    return <EventCard user={items} attendee={true} key={index} />
+                    return <EventCard user={items} attendee={true} eventUid={index} goings={going} notgoings = {notgoing}/>
                 })}
             </div>
         )

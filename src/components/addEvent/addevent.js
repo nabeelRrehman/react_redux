@@ -21,46 +21,53 @@ class AddEvent extends Component {
         var fileReader = new FileReader();
         // console.log(fileReader)
 
-        fileReader.addEventListener("load",  ()=> {
+        fileReader.addEventListener("load", () => {
             const imageUrl = fileReader.result;
             console.log(imageUrl, "imageUrl")
             this.setState({ imageUrl })
         }, false);
 
-        if(imageFile){
+        if (imageFile) {
             fileReader.readAsDataURL(imageFile)
         }
     }
 
     addEvent() {
-        const { name, detail, location, startTime, endTime, imageUrl, address, ticket, price, arrangement, seats } = this.state
+        const { name, detail, location, startTime, endTime, imageUrl, address,
+            ticket, price, arrangement, from, to } = this.state
         console.log(imageUrl)
         const userUid = localStorage.getItem('userUid')
         if (name && detail && location && startTime && endTime &&
-            address && ticket && arrangement && seats) {
+            address && ticket && arrangement && from && to) {
+            const seatingArrange = {
+                from: from,
+                to: to
+            }
             const obj = {
-                name, detail, location, startTime, endTime, imageUrl, userUid, address, ticket, price , arrangement, seats
+                name, detail, location, startTime, endTime, imageUrl, userUid, address, ticket, price, arrangement, seatingArrange
             }
             if (ticket === 'paid' && price || ticket === 'free' && !price) {
-                firebase.database().ref('/events/'+userUid+'/').push(obj)
-                .then(()=>{
-                    swal({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Successfully Add Event',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    this.setState({name:'',detail:'',location:'',startTime:'',
-                    endTime:'',imageUrl:'',address:'',ticket:'',price:'',
-                    arrangement:'',seats:''})
+                firebase.database().ref('/events/' + userUid + '/').push(obj)
+                    .then(() => {
+                        swal({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Successfully Add Event',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        this.setState({
+                            name: '', detail: '', location: '', startTime: '',
+                            endTime: '', imageUrl: '', address: '', ticket: '', price: '',
+                            arrangement: '', from: '', to: ''
+                        })
 
-                }).catch((error)=>{
-                    swal({
-                        type: 'error',
-                        title: error.message
+                    }).catch((error) => {
+                        swal({
+                            type: 'error',
+                            title: error.message
+                        })
                     })
-                })
             }
             else {
                 swal({
@@ -77,7 +84,7 @@ class AddEvent extends Component {
     }
 
     render() {
-        const { ticket, name, detail, location, startTime, endTime, address, price, arrangement, seats } = this.state
+        const { ticket, name, detail, location, startTime, endTime, address, price, arrangement, from, to } = this.state
         return (
             <div className='main-container'>
                 <div className='first-child'>
@@ -121,7 +128,15 @@ class AddEvent extends Component {
                             <input type='text' value={arrangement} placeholder='Siting Arrangement Details' onChange={(e) => this.setState({ arrangement: e.target.value })} />
                         </div>
                         <div className='event-fields'>
-                            <input type='number' value={seats} placeholder='Number of Seats or Attendee or Tickets' onChange={(e) => this.setState({ seats: e.target.value })} />
+                            <div className='no_of_seats'>
+                                Number Of Seats
+                            </div>
+                        </div>
+                        <div className='event-fields'>
+                            <input type='number' value={from} placeholder='From' onChange={(e) => this.setState({ from: e.target.value })} />
+                        </div>
+                        <div className='event-fields'>
+                            <input type='number' value={to} placeholder='To' onChange={(e) => this.setState({ to: e.target.value })} />
                         </div>
                         <div className='event-fields'>
                             <input type='file' name="image" id="image" onChange={this.imageFile} />

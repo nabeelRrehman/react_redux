@@ -79,3 +79,11 @@
 .btnToggle{
     opacity: 0.5;
 }
+.user-interest{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.user-interest div{
+    margin: 5px;
+}

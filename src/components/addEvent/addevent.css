@@ -90,3 +90,8 @@
     display: inline;
     margin-left: 30px;
 }
+.no_of_seats{
+    color: grey;
+    font-weight: 600;
+    font-size: 20px;
+}

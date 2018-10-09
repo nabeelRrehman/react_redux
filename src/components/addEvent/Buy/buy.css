@@ -1,0 +1,43 @@
+.event-fields select{
+    width: 300px;
+    padding: 5px;
+    border-bottom: 3px solid grey;
+    border-top: none;
+    transition: 1s;
+    border-left: none;
+    border-right: none;
+    text-align: left;
+    font-weight: bold;
+    color: grey;
+    background: none;
+}
+.event-fields select:focus{
+    background: white;
+    color: #24333c;
+}
+.event-seats{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    justify-content: center;
+    border: 1px solid black;
+}
+.seats{
+    display: flex;
+    flex-wrap: wrap;
+    /* width: 70%; */
+    border-left: 1px solid rgb(201, 193, 213);
+    border-right: 1px solid rgb(201, 193, 213);
+    border-bottom: 1px solid rgb(201, 193, 213);
+    border-top: 1px solid rgb(201, 193, 213);
+    /* background-color: rgb(229, 237, 245); */
+    padding: 15px;
+}
+.seats div{
+    padding: 5px;
+    margin: 5px;
+    cursor: pointer;
+    border: 1px solid grey;
+    color: grey;
+    border-radius: 5px;
+}
