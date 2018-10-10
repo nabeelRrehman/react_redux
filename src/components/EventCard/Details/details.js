@@ -3,14 +3,15 @@ import Container from '../../../Container/container/container';
 import firebase from 'firebase'
 import swal from 'sweetalert2'
 import './details.css'
-import Pic from '../../../Assets/images/index.png'
-
+import {Link} from 'react-router-dom'
 
 class Details extends Component {
     constructor() {
         super()
 
         this.state = {
+            totalSeats: [],
+            totalReserved: []
         }
     }
 
@@ -25,6 +26,7 @@ class Details extends Component {
     }
 
     componentDidMount() {
+        const { totalSeats, totalReserved } = this.state
         const { id } = this.props.match.params
         // console.log('id***',id)
         firebase.database().ref('/events/').on('value', (snapShot) => {
@@ -40,14 +42,18 @@ class Details extends Component {
                             ticket: eventKey[key2].ticket,
                             price: eventKey[key2].price,
                             key: key2,
-                            seats: eventKey[key2].seats,
+                            seats: eventKey[key2].seatingArrange,
                             address: eventKey[key2].address,
                             startTime: eventKey[key2].startTime,
                             endTime: eventKey[key2].endTime,
                             arrangement: eventKey[key2].arrangement,
                             location: eventKey[key2].location
                         }
-                        this.setState({ event })
+                        const seats = eventKey[key2].seatingArrange
+                        for (var i = Number(seats.from); i <= Number(seats.to); i++) {
+                            totalSeats.push(i)
+                        }
+                        this.setState({ event, totalSeats })
                     }
                 }
             }
@@ -55,6 +61,23 @@ class Details extends Component {
                 showConfirmButton: false,
                 timer: 100
             })
+        })
+
+        firebase.database().ref('users').on('child_added', (snapShot) => {
+            for (var key in snapShot.val()) {
+                const value = snapShot.val()[key];
+                if (key === 'buyEvents') {
+                    for (var key2 in value) {
+                        if (key2 === id) {
+                            for (var key3 in value[key2]) {
+                                // console.log(value[key2][key3].seats)
+                                totalReserved.push(...value[key2][key3].seats)
+                                this.setState({ totalReserved })
+                            }
+                        }
+                    }
+                }
+            }
         })
     }
 
@@ -66,7 +89,7 @@ class Details extends Component {
     }
 
     render() {
-        const { event } = this.state
+        const { event, totalSeats, totalReserved } = this.state
         return (
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
                 {
@@ -98,7 +121,7 @@ class Details extends Component {
                                 Seats/Left:
                         </div>
                             <div>
-                                {event.seats}/{'6'}
+                                {totalSeats.length}/{totalSeats.length - totalReserved.length}
                             </div>
                             <div>
                                 Price Per Ticket:
@@ -136,9 +159,16 @@ class Details extends Component {
                                 {event.ticket}
                             </div>
                         </div>
-                        <div className='event-detail-btn'>
-                            <button>BUY</button>
-                        </div>
+                        {
+                            totalSeats.length === totalReserved.length ?
+                                <div className='event-detail-btn'>
+                                    <button disabled={'disabled'} style= {{opacity:'0.5'}}>SOLD</button>
+                                </div>
+                                :
+                                <div className='event-detail-btn'>
+                                    <Link className='buyBtn' to={`${'/buy/'}${event.key}`} style={{ color: 'white', textDecoration: 'none' }}>Buy</Link>
+                                </div>
+                        }
                     </div>
                 }
             </Container>

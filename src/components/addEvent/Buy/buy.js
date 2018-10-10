@@ -208,16 +208,21 @@ class Buy extends Component {
                 this.setState({ SelectedList })
             }
         } else {
-            swal({
-                type: 'error',
-                title: `You Dont Have More Tickets`
-            })
+            if (selectOpt !== -1) {
+                SelectedList.splice(selectOpt, 1)
+                this.setState({ SelectedList })
+            } else {
+                swal({
+                    type: 'error',
+                    title: `You Dont Have More Tickets`
+                })
+            }
         }
 
     }
 
     render() {
-        const { event, selectedOption, from, to, list } = this.state
+        const { event, selectedOption, from, to, list, reservedSeats } = this.state
         return (
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
                 {
@@ -244,22 +249,29 @@ class Buy extends Component {
                                     <span>Price Per Ticket : </span>
                                     <input type='text' disabled={'disabled'} defaultValue={event.price ? event.price : event.ticket} />
                                 </div>
-                                <div className='event-fields'>
-                                    <span>Ticket : </span>
-                                    <select value={selectedOption} onChange={(e) => this.selectedOption(e.target.value)}>
-                                        <option value='select'>Select No Of Ticket  Max: 10</option>
-                                        <option value='1'>1</option>
-                                        <option value='2'>2</option>
-                                        <option value='3'>3</option>
-                                        <option value='4'>4</option>
-                                        <option value='5'>5</option>
-                                        <option value='6'>6</option>
-                                        <option value='7'>7</option>
-                                        <option value='8'>8</option>
-                                        <option value='9'>9</option>
-                                        <option value='10'>10</option>
-                                    </select>
-                                </div>
+                                {
+                                    list.length === reservedSeats.length ?
+                                        <div className='event-fields'>
+                                            <input type='text' placeholder='Tickets Are Sold' disabled={'disabled'}/>
+                                        </div>
+                                        :
+                                        <div className='event-fields'>
+                                            <span>Ticket : </span>
+                                            <select value={selectedOption} onChange={(e) => this.selectedOption(e.target.value)}>
+                                                <option value='select'>Select No Of Ticket  Max: 10</option>
+                                                <option value='1'>1</option>
+                                                <option value='2'>2</option>
+                                                <option value='3'>3</option>
+                                                <option value='4'>4</option>
+                                                <option value='5'>5</option>
+                                                <option value='6'>6</option>
+                                                <option value='7'>7</option>
+                                                <option value='8'>8</option>
+                                                <option value='9'>9</option>
+                                                <option value='10'>10</option>
+                                            </select>
+                                        </div>
+                                }
                                 {
                                     selectedOption &&
                                     <div>
@@ -295,11 +307,20 @@ class Buy extends Component {
                                         </div>
                                     </div>
                                 }
-                                <div>
-                                    <button className='event-button' onClick={() => this.buyEvent()}>
-                                        BUY
-                                    </button>
-                                </div>
+                                {
+                                    list.length === reservedSeats.length ?
+                                        <div>
+                                            <button style={{ opacity: '0.5' }} disabled={'disabled'} className='event-button'>
+                                                SOLD
+                                            </button>
+                                        </div>
+                                        :
+                                        <div>
+                                            <button className='event-button' onClick={() => this.buyEvent()}>
+                                                BUY
+                                            </button>
+                                        </div>
+                                }
                             </div>
                         </div>
                     </div>

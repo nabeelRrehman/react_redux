@@ -36,10 +36,10 @@ class Attendee extends Component {
                 </div>
                 <div className='userInterest'>
                     <div>
-                        <Link to='/home/going' className='going'>Going</Link>
+                        <Link to='/goingEvents' className='going'>Going</Link>
                     </div>
                     <div>
-                        <Link to='/home/not-going' className='going'>Not Going</Link>
+                        <Link to='/notGoingEvents' className='going'>Not Going</Link>
                     </div>
                 </div>
                 {events.length > 0 && events.map((items, index) => {

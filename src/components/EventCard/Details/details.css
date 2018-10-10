@@ -51,6 +51,7 @@
 .event-detail-btn {
     flex-basis: 100%;
     order: 4;
+    margin: 10px;
     padding: 10px;
 }
 .event-detail-btn button {
@@ -71,4 +72,14 @@
     .event-details div:nth-child(3) {
         flex-basis: 100%;
     }
+}
+.buyBtn{
+    margin: 10px 5px 10px 5px;
+    padding: 10px 15px 10px 15px;
+    background-color: #24333c;
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
 }

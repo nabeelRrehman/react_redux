@@ -8,7 +8,8 @@ import home from './components/home';
 import Role from './components/EventCard/Role/role';
 import Details from './components/EventCard/Details/details';
 import Buy from './components/addEvent/Buy/buy';
-import  NavBarSide  from './components/sideNav/sidenav';
+import GoingEvent from './components/goingEvents/going';
+import NotGoingEvent from './components/notGoing/notGoing';
 
 
 class Routers extends Component {
@@ -23,7 +24,8 @@ class Routers extends Component {
                     <Route path='/role' component={Role} />
                     <Route path='/details/:id' component={Details} />
                     <Route path='/buy/:ticket' component={Buy} />
-                    <Route path='/sideBar' component={NavBarSide} />
+                    <Route path='/goingEvents' component = {GoingEvent}/>
+                    <Route path = '/notGoingEvents' component = {NotGoingEvent}/>
                 </div>
             </Router>
         )
