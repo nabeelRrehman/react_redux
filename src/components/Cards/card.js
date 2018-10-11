@@ -74,7 +74,7 @@ class Card extends Component {
                                         this.setState({ totalReserved }, () => {
                                             console.log('total reserved', this.state.totalReserved)
                                             if (this.state.totalReserved.length === this.state.totalSeats.length) {
-                                                reserved.push(key2)
+                                                reserved.push(this.props.userEvent)
                                                 this.setState({ reserved }, () => {
                                                     console.log(this.state.reserved, 'seatsreserved key')
                                                 })

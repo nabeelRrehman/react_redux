@@ -80,6 +80,10 @@ class EventCard extends Component {
         })
     }
 
+    componentWillUpdate(props, state) {
+        // this.reservedSeats()
+    }
+
     reservedSeats() {
         const user = localStorage.getItem('userUid')
         const { event, reserved } = this.state
@@ -119,13 +123,17 @@ class EventCard extends Component {
                             for (var key2 in value) {
                                 if (key2 === snapShot.key) {
                                     firebase.database().ref('/users/' + key1 + '/buyEvents/' + key2).on('child_added', (snaps) => {
-                                        console.log('*******', snaps.val())
+                                        // console.log('*******', snaps.val())
                                         totalReserved.push(...snaps.val())
                                         this.setState({ totalReserved }, () => {
-                                            if (this.state.totalReserved.length === this.state.totalSeats.length) {
-                                                reserved.push(key2)
-                                                this.setState({ reserved })
+                                            if (this.state.totalReserved.length == totalSeats.length) {
+                                                if (reserved.indexOf(snapShot.key) === -1) {
+                                                    reserved.push(snapShot.key)
+                                                }
                                             }
+                                            this.setState({ reserved }, () => {
+                                                console.log(this.state.reserved)
+                                            })
                                         })
                                     })
                                 }
