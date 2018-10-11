@@ -37,6 +37,10 @@ class GoingEvent extends Component {
 
     componentDidMount() {
         const user = localStorage.getItem('userUid')
+        swal({
+            showConfirmButton: false,
+            timer: 100
+        })
     }
 
     logout() {                          //logout the user and clear the localStorage
@@ -55,6 +59,10 @@ class GoingEvent extends Component {
                     goingEvents.map((items,index) =>{
                         return <Card key={index} attendee={true} eventUid={index} goings={goingEvents} userEvent={items} checkEvent={'goingEvents'}/>
                     })
+                }
+                {
+                    goingEvents.length === 0 &&
+                    <h1 style={{marginTop: '3em', color:'red'}}>No Events Found!</h1>
                 }
             </Container>
         )

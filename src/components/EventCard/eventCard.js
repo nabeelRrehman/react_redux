@@ -27,11 +27,13 @@ class EventCard extends Component {
 
         }
         this.getGoingEvents = this.getGoingEvents.bind(this)
+        this.reservedSeats = this.reservedSeats.bind(this)
     }
 
     componentWillMount() {
 
         this.getGoingEvents()
+        this.reservedSeats()
     }
 
 
@@ -78,7 +80,7 @@ class EventCard extends Component {
         })
     }
 
-    componentDidMount() {
+    reservedSeats() {
         const user = localStorage.getItem('userUid')
         const { event, reserved } = this.state
         swal({
@@ -104,32 +106,33 @@ class EventCard extends Component {
             for (var i = Number(from); i <= Number(to); i++) {
                 totalSeats.push(i)
             }
-            
+
             this.setState({ event, totalSeats })
-            
-            firebase.database().ref('users').on('child_added', (snapShots) => {
+
+            firebase.database().ref('users').on('value', (snapShots) => {
                 const totalReserved = []
-                for (var key in snapShots.val()) {
-                    const value = snapShots.val()[key];
-                    if (key === 'buyEvents') {
-                        for (var key2 in value) {
-                            console.log(snapShot.key)
-                            if (key2 === snapShot.key) {
-                                for (var key3 in value[key2]) {
-                                    // console.log(value[key2][key3].seats)
-                                    totalReserved.push(...value[key2][key3].seats)
-                                    this.setState({ totalReserved }, () => {
-                                        console.log('reserved***', this.state.totalReserved)
-                                        console.log('totalseats***', totalSeats)
-                                        this.state.totalReserved.length === this.state.totalSeats.length &&
-                                            reserved.push(key2)
+                for (var key1 in snapShots.val()) {
+                    // console.log(key1,'user data')
+                    for (var key in snapShots.val()[key1]) {
+                        const value = snapShots.val()[key1][key];
+                        if (key === 'buyEvents') {
+                            for (var key2 in value) {
+                                if (key2 === snapShot.key) {
+                                    firebase.database().ref('/users/' + key1 + '/buyEvents/' + key2).on('child_added', (snaps) => {
+                                        console.log('*******', snaps.val())
+                                        totalReserved.push(...snaps.val())
+                                        this.setState({ totalReserved }, () => {
+                                            if (this.state.totalReserved.length === this.state.totalSeats.length) {
+                                                reserved.push(key2)
+                                                this.setState({ reserved })
+                                            }
+                                        })
                                     })
                                 }
                             }
                         }
                     }
                 }
-                this.setState({ reserved })
             })
 
             swal({
@@ -177,7 +180,6 @@ class EventCard extends Component {
     eventCard(image, title, description, ticket, price, index, key, seats) {
         const { attendee } = this.props
         const { goings, notgoings, arr, totalReserved, totalSeats, reserved } = this.state
-        console.log(reserved)
         return (
             <div className='event-card' key={`${index}`}>
                 <div className='event-card-img'>

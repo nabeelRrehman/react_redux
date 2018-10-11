@@ -12,14 +12,14 @@ library.add(faCheckCircle)
 
 
 class Card extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
             event: [],
             counter: 0,
-            goings: [],
-            notgoings: [],
+            goings: props.goings,
+            notgoings: props.notgoings,
             arr: [],
             reserved: [],
             totalSeatsLength: []
@@ -27,82 +27,95 @@ class Card extends Component {
     }
 
     componentWillMount() {
+
         const { event, reserved } = this.state
         const user = localStorage.getItem('userUid')
         firebase.database().ref('/events/').on('child_added', (snapShot) => {
-            for (var key in snapShot.val()) {
-                if (key === this.props.userEvent) {
-                    console.log(snapShot.val()[key])
-                    const data = snapShot.val()[key]
-                    const card = {
-                        image: data.imageUrl,
-                        name: data.name,
-                        detail: data.detail,
-                        ticket: data.ticket,
-                        price: data.price,
-                        key: this.props.userEvent,
-                        seats: data.seatingArrange
-                    }
-                    event.push(card)
-                    const totalSeats = []
-                    const from = data.seatingArrange.from
-                    const to = data.seatingArrange.to
-                    for (var i = Number(from); i <= Number(to); i++) {
-                        totalSeats.push(i)
-                    }
 
-                    this.setState({ event, totalSeats })
+                for (var key in snapShot.val()) {
+                    if (key === this.props.userEvent) {
+                        console.log(snapShot.val()[key])
+                        const data = snapShot.val()[key]
+                        const card = {
+                            image: data.imageUrl,
+                            name: data.name,
+                            detail: data.detail,
+                            ticket: data.ticket,
+                            price: data.price,
+                            key: this.props.userEvent,
+                            seats: data.seatingArrange
+                        }
+                        event.push(card)
+                        const totalSeats = []
+                        const from = data.seatingArrange.from
+                        const to = data.seatingArrange.to
+                        for (var i = Number(from); i <= Number(to); i++) {
+                            totalSeats.push(i)
+                        }
+
+                        this.setState({ event, totalSeats }, () => {
+                            console.log(this.state.totalSeats)
+                        })
+                    }
                 }
-            }
 
-            firebase.database().ref('users').on('child_added', (snapShots) => {
+            firebase.database().ref('users').on('value', (snapShots) => {
                 const totalReserved = []
-                for (var key in snapShots.val()) {
-                    const value = snapShots.val()[key];
-                    if (key === 'buyEvents') {
-                        for (var key2 in value) {
-                            console.log(snapShot.key)
-                            if (key2 === this.props.userEvent) {
-                                for (var key3 in value[key2]) {
-                                    // console.log(value[key2][key3].seats)
-                                    totalReserved.push(...value[key2][key3].seats)
-                                    this.setState({ totalReserved }, () => {
-                                        // console.log('reserved***', this.state.totalReserved)
-                                        // console.log('totalseats***', totalSeats)
-                                        this.state.totalReserved.length === this.state.totalSeats.length &&
-                                            reserved.push(key2)
+                for (var key1 in snapShots.val()) {
+                    // console.log(snapShots.val())
+                    for (var key in snapShots.val()[key1]) {
+                        const value = snapShots.val()[key1][key];
+                        if (key === 'buyEvents') {
+                            for (var key2 in value) {
+                                if (key2 === this.props.userEvent) {
+                                    firebase.database().ref('/users/' + key1 + '/buyEvents/' + key2).on('child_added', (snaps) => {
+                                        console.log(snaps.val())
+                                        totalReserved.push(...snaps.val())
+                                        this.setState({ totalReserved }, () => {
+                                            console.log('total reserved', this.state.totalReserved)
+                                            if (this.state.totalReserved.length === this.state.totalSeats.length) {
+                                                reserved.push(key2)
+                                                this.setState({ reserved }, () => {
+                                                    console.log(this.state.reserved, 'seatsreserved key')
+                                                })
+                                            }
+                                        })
                                     })
                                 }
                             }
                         }
                     }
                 }
-                this.setState({ reserved })
             })
-
             swal({
                 showConfirmButton: false,
                 timer: 100
             })
         })
+
     }
 
-    interested(id, key) {
+    interest(id, key) {
+        const { goings } = this.state
         const user = localStorage.getItem('userUid')
         firebase.database().ref('/users/' + user + '/goingEvents/' + key).remove()
-        this.setState
+        goings.splice(key, 1)
+        this.setState({ goings })
     }
 
-    notGoing(id, key) {
+    notGoings(id, key) {
+        const { notgoings } = this.state
         const user = localStorage.getItem('userUid')
 
         firebase.database().ref('/users/' + user + '/notGoingEvents/' + key).remove()
+        notgoings.splice(key, 1)
+        this.setState({ notgoings })
     }
 
     eventCard(image, title, description, ticket, price, index, key) {
-        const { attendee, goings, notgoings } = this.props
-        const { arr, reserved } = this.state
-        console.log(reserved)
+        const { attendee } = this.props
+        const { arr, reserved, goings, notgoings } = this.state
+        console.log(reserved,'reserved seats')
         return (
             <div className='event-card' key={`${index}`}>
                 <div className='event-card-img'>
@@ -122,7 +135,7 @@ class Card extends Component {
                             goings.map((items, value) => {
                                 return (
                                     items === key &&
-                                    <div key={value} id={'green'} onClick={(e) => { this.interested(e.currentTarget.id, key) }}>
+                                    <div key={value} id={'green'} onClick={(e) => { this.interest(e.currentTarget.id, key) }}>
                                         <FontAwesomeIcon icon='check-circle' style={{ color: 'green' }} />
                                     </div>
                                 )
@@ -133,7 +146,7 @@ class Card extends Component {
                             notgoings.map((items, value) => {
                                 return (
                                     items === key &&
-                                    <div key={value} id={'red'} onClick={(e) => this.notGoing(e.currentTarget.id, key)}>
+                                    <div key={value} id={'red'} onClick={(e) => this.notGoings(e.currentTarget.id, key)}>
                                         <FontAwesomeIcon icon='times-circle' style={{ color: 'red' }} />
                                     </div>
                                 )
@@ -168,12 +181,27 @@ class Card extends Component {
     }
 
     render() {
-        const { event } = this.state
+        const { event, goings, notgoings } = this.state
         return (
             <div className='main-container'>
                 {
                     event.map((items, index) => {
-                        return this.eventCard(items.image, items.name, items.detail, items.ticket, items.price, index, items.key, items.seats)
+
+                        return (
+                            goings &&
+                            goings.indexOf(items.key) !== -1 &&
+                            this.eventCard(items.image, items.name, items.detail, items.ticket, items.price, index, items.key, items.seats)
+                        )
+                    })
+                }
+                {
+                    event.map((items, index) => {
+
+                        return (
+                            notgoings &&
+                            notgoings.indexOf(items.key) !== -1 &&
+                            this.eventCard(items.image, items.name, items.detail, items.ticket, items.price, index, items.key, items.seats)
+                        )
                     })
                 }
             </div>

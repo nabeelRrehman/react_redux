@@ -3,7 +3,13 @@ import Container from '../../../Container/container/container';
 import firebase from 'firebase'
 import swal from 'sweetalert2'
 import './details.css'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimesCircle)
+
 
 class Details extends Component {
     constructor() {
@@ -13,6 +19,7 @@ class Details extends Component {
             totalSeats: [],
             totalReserved: []
         }
+        this.logout = this.logout.bind(this)
     }
 
     componentWillMount() {
@@ -22,6 +29,11 @@ class Details extends Component {
             onOpen: () => {
                 swal.showLoading()
             },
+        })
+
+        firebase.database().ref('/users/' + user + '/userDetails/').on('child_added', (snapshot) => {
+            console.log(snapshot.val())
+            this.setState({ role: snapshot.val().role })
         })
     }
 
@@ -69,11 +81,13 @@ class Details extends Component {
                 if (key === 'buyEvents') {
                     for (var key2 in value) {
                         if (key2 === id) {
-                            for (var key3 in value[key2]) {
-                                // console.log(value[key2][key3].seats)
-                                totalReserved.push(...value[key2][key3].seats)
-                                this.setState({ totalReserved })
-                            }
+                            firebase.database().ref('/users/' + snapShot.key + '/buyEvents/' + key2 + '/').on('child_added', (snapshot) => {
+                                console.log(snapshot.val())
+                                totalReserved.push(...snapshot.val())
+                                this.setState({ totalReserved }, () => {
+                                    console.log(this.state.totalReserved)
+                                })
+                            })
                         }
                     }
                 }
@@ -89,7 +103,7 @@ class Details extends Component {
     }
 
     render() {
-        const { event, totalSeats, totalReserved } = this.state
+        const { event, totalSeats, totalReserved, role } = this.state
         return (
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
                 {
@@ -97,17 +111,24 @@ class Details extends Component {
                     <div className='event-details'>
                         <div className='event-name'>
                             {event.name}
+                            {
+                                role === 'attendee' &&
+                                totalSeats.length === totalReserved.length &&
+                                <span className='event-closed'>
+                                    <FontAwesomeIcon icon='times-circle' /> Closed
+                                </span>
+                            }
                         </div>
                         <div className='siting-arrange'>
                             <div>
                                 Siting arrangement:
-                        </div>
+                            </div>
                             <div>
                                 {event.arrangement}
                             </div>
                             <div>
                                 Start Time:
-                        </div>
+                            </div>
                             <div>
                                 {event.startTime}
                             </div>
@@ -118,10 +139,20 @@ class Details extends Component {
                                 {event.endTime}
                             </div>
                             <div>
-                                Seats/Left:
-                        </div>
+                               {
+                                   role === 'attendee' ?
+                                   'Seats/Left:':
+                                   'Seats'
+                               } 
+                            </div>
                             <div>
-                                {totalSeats.length}/{totalSeats.length - totalReserved.length}
+                                {
+                                    role === 'attendee' ?
+                                    `${totalSeats.length}/${totalSeats.length - totalReserved.length}`:
+                                    `${totalSeats.length}`
+                                    
+                                }
+                                
                             </div>
                             <div>
                                 Price Per Ticket:
@@ -160,14 +191,18 @@ class Details extends Component {
                             </div>
                         </div>
                         {
-                            totalSeats.length === totalReserved.length ?
-                                <div className='event-detail-btn'>
-                                    <button disabled={'disabled'} style= {{opacity:'0.5'}}>SOLD</button>
-                                </div>
-                                :
-                                <div className='event-detail-btn'>
-                                    <Link className='buyBtn' to={`${'/buy/'}${event.key}`} style={{ color: 'white', textDecoration: 'none' }}>Buy</Link>
-                                </div>
+                            role === 'attendee' &&
+                            (
+
+                                totalSeats.length === totalReserved.length ?
+                                    <div className='event-detail-btn'>
+                                        <button disabled={'disabled'} style={{ opacity: '0.5' }}>SOLD</button>
+                                    </div>
+                                    :
+                                    <div className='event-detail-btn'>
+                                        <Link className='buyBtn' to={`${'/buy/'}${event.key}`} style={{ color: 'white', textDecoration: 'none' }}>Buy</Link>
+                                    </div>
+                            )
                         }
                     </div>
                 }

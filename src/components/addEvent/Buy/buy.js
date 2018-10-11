@@ -16,10 +16,10 @@ class Buy extends Component {
             reservedSeats: []
         }
         this.logout = this.logout.bind(this)
+        this.getReservedSeats = this.getReservedSeats.bind(this)
     }
 
     componentWillMount() {
-        const { reservedSeats } = this.state
         const user = localStorage.getItem('userUid')
         !user && this.props.history.push('/')
         swal({
@@ -27,29 +27,21 @@ class Buy extends Component {
                 swal.showLoading()
             },
         })
-
-        firebase.database().ref('/users/').on('child_added', (snapShot) => {
-            for (var key in snapShot.val().buyEvents) {
-                const bTickets = snapShot.val().buyEvents[key]
-                // console.log(key)
-                // console.log(this.props.match.params.ticket)
-                if (key === this.props.match.params.ticket) {
-                    console.log(bTickets)
-                    for (var key2 in bTickets) {
-                        console.log(bTickets[key2].seats)
-                        reservedSeats.push(...bTickets[key2].seats)
-                        this.setState({ reservedSeats }, () => {
-                            console.log(this.state.reservedSeats)
-                        })
-                    }
-                }
-            }
-        })
+        this.getReservedSeats()
     }
 
+    
     componentDidMount() {
-        const { ticket } = this.props.match.params
         // console.log('id***',id)
+
+
+    }
+
+
+    getReservedSeats() {
+        const { reservedSeats } = this.state
+        const { ticket } = this.props.match.params
+
         firebase.database().ref('/events/').on('value', (snapShot) => {
             for (var key in snapShot.val()) {
                 const eventKey = snapShot.val()[key]
@@ -74,20 +66,38 @@ class Buy extends Component {
                             const { list } = this.state
                             if (event.seats) {
                                 for (var i = Number(event.seats.from); i <= event.seats.to; i++) {
-                                    list.push(i)
+                                    if(list.length !== (event.seats.to - event.seats.from)+1){
+                                        list.push(i)
+                                        this.setState({ list })
+                                        console.log(list)
+                                    }
                                 }
-                                this.setState({ list })
-                                console.log(list)
                             }
                         })
                     }
                 }
             }
+            firebase.database().ref('/users/').on('child_added', (snapShot) => {
+    
+                for (var key in snapShot.val().buyEvents) {
+                    if (key === this.props.match.params.ticket) {
+                        firebase.database().ref('/users/' + snapShot.key + '/buyEvents/' + key + '/').on('child_added', (snapshot) => {
+                            console.log(snapshot.val())
+                            reservedSeats.push(...snapshot.val())
+                            this.setState({ reservedSeats }, () => {
+                                console.log(this.state.reservedSeats)
+                            })
+                        })
+                    }
+                }
+            })
             swal({
                 showConfirmButton: false,
                 timer: 100
             })
         })
+
+
     }
 
     logout() {                          //logout the user and clear the localStorage
@@ -162,9 +172,8 @@ class Buy extends Component {
                                                 title: 'Dont have enough seats'
                                             })
                                         } else {
-                                            const obj = {
-                                                seats: [...array]
-                                            }
+                                            const obj = [...array]
+
                                             firebase.database().ref('/users/' + user + '/buyEvents/' + eventTicket + '/').push(obj)
                                                 .then(() => {
                                                     swal({
@@ -172,14 +181,14 @@ class Buy extends Component {
                                                         title: 'Successfully Buy Tickets'
                                                     })
                                                 })
+                                                this.getReservedSeats()
                                             this.setState({ selectedOption: '', from: '', to: '', SelectedList: '' })
                                         }
                                     }
                                 }
                             } else {
-                                const obj = {
-                                    seats: [...SelectedList]
-                                }
+                                const obj = [...SelectedList]
+
                                 firebase.database().ref('/users/' + user + '/buyEvents/' + eventTicket + '/').push(obj)
                                     .then(() => {
                                         swal({
@@ -187,6 +196,7 @@ class Buy extends Component {
                                             title: 'Successfully Buy Tickets'
                                         })
                                     })
+                                    this.getReservedSeats()
                                 this.setState({ selectedOption: '', from: '', to: '', SelectedList: '' })
                             }
                         }
@@ -196,7 +206,7 @@ class Buy extends Component {
         }
     }
 
-    selectTicket(item, index) {
+    selectTicket(item) {
         const { SelectedList, selectedOption } = this.state
         const selectOpt = SelectedList.indexOf(item)
         if (SelectedList.length < selectedOption) {
@@ -252,7 +262,7 @@ class Buy extends Component {
                                 {
                                     list.length === reservedSeats.length ?
                                         <div className='event-fields'>
-                                            <input type='text' placeholder='Tickets Are Sold' disabled={'disabled'}/>
+                                            <input type='text' placeholder='Tickets Are Sold' disabled={'disabled'} />
                                         </div>
                                         :
                                         <div className='event-fields'>
@@ -290,14 +300,14 @@ class Buy extends Component {
                                                         const { SelectedList, reservedSeats } = this.state
                                                         return (
                                                             reservedSeats.indexOf(items) !== -1 ?
-                                                                <div key={index} style={{ color: 'white', backgroundColor: 'red' }}>{items}</div>
+                                                                <div key={index + '1'} style={{ color: 'white', backgroundColor: 'red' }}>{items}</div>
                                                                 :
-                                                                <span>
+                                                                <span key={index + '4'}>
                                                                     {
                                                                         SelectedList.indexOf(items) !== -1 ?
-                                                                            <div key={index} style={{ color: 'white', backgroundColor: 'green' }} onClick={() => this.selectTicket(items, index)}>{items}</div>
+                                                                            <div key={index + '2'} style={{ color: 'white', backgroundColor: 'green' }} onClick={() => this.selectTicket(items)}>{items}</div>
                                                                             :
-                                                                            <div key={index} onClick={() => this.selectTicket(items, index)}>{items}</div>
+                                                                            <div key={index + '3'} onClick={() => this.selectTicket(items)}>{items}</div>
                                                                     }
                                                                 </span>
                                                         )

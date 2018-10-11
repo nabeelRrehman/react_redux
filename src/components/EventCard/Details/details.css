@@ -12,6 +12,15 @@
     padding: 15px;
     flex-basis: 100%;
 }
+.event-name>span{
+    border: 1px solid white;
+    background-color: red;
+    color: white;
+    padding: 5px 15px 5px 15px;
+    float: right;
+    border-radius: 10px;
+    /* justify-content: flex-end; */
+}
 .ticket-detail,.siting-arrange{
     display: flex;
     justify-content: center;

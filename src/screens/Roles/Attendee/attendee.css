@@ -3,19 +3,33 @@
     flex-wrap: wrap;
     justify-content: center;
     flex-basis: 100%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 10px;
 }
-.userInterest div .going{
-    text-decoration: none;
-    color: black;
-    color: black;
-    cursor: pointer;
-}
-/* .userInterest div{
-    border: 1px solid black;
+.userInterest div{
+    /* border: 1px solid black; */
     padding: 15px;
-    background-color: black;
     border-radius: 10px;
     margin: 5px 20px 5px 20px;
-} */
+}
+.notgoing,.going{
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+}
+.going:hover,.notgoing:hover{
+    color: white;
+}
+.userInterest div:first-child{
+    border: 1px solid green;
+    padding: 15px 30px 15px 30px;
+}
+.userInterest div:first-child:hover{
+    background-color: lightgreen;
+}
+.userInterest div:last-child{
+    border: 1px solid red;
+}
+.userInterest div:last-child:hover{
+    background-color: #ff000087;
+}

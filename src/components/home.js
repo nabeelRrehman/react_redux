@@ -27,6 +27,11 @@ class Home extends Component {
         console.log(user)
 
         !user && this.props.history.push('/')
+        swal({
+            onOpen: () => {
+                swal.showLoading()
+            },
+        })
     }
 
     componentDidMount() {
@@ -34,11 +39,6 @@ class Home extends Component {
         const userUid = localStorage.getItem('userUid')
         // // console.log(userUid)
         user &&
-            swal({
-                onOpen: () => {
-                    swal.showLoading()
-                },
-            })
             firebase.database().ref('users/' + userUid + '/userDetails/').once('child_added', (snapShot) => {
                 console.log(snapShot.val())
                 this.setState({ role: snapShot.val().role})
@@ -46,6 +46,10 @@ class Home extends Component {
                     showConfirmButton: false,
                     timer: 100
                 })
+            })
+            swal({
+                showConfirmButton: false,
+                timer: 100
             })
     }
 

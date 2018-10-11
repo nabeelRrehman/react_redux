@@ -17,7 +17,6 @@ class NotGoingEvent extends Component {
     componentWillMount() {
         const { notGoingEvents } = this.state
         const user = localStorage.getItem('userUid')
-        const { goingEvents } = this.state
         !user && this.props.history.push('/')
         swal({
             onOpen: () => {
@@ -32,11 +31,18 @@ class NotGoingEvent extends Component {
                 showConfirmButton: false,
                 timer: 100
             })
-            this.setState({goingEvents})
+            this.setState({ notGoingEvents })
         })
     }
 
     componentDidMount() {
+        const { notGoingEvents } = this.state
+        if (notGoingEvents) {
+            swal({
+                showConfirmButton: false,
+                timer: 100
+            })
+        }
         const user = localStorage.getItem('userUid')
     }
 
@@ -53,9 +59,13 @@ class NotGoingEvent extends Component {
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
                 <h1>Not Going Events</h1>
                 {
-                    notGoingEvents.map((items,index) =>{
-                        return <Card key={index} attendee={true} eventUid={index} notgoings={notGoingEvents} userEvent={items}/>
+                    notGoingEvents.map((items, index) => {
+                        return <Card key={index} attendee={true} eventUid={index} notgoings={notGoingEvents} userEvent={items} />
                     })
+                }
+                {
+                    notGoingEvents.length === 0 &&
+                    <h1 style={{marginTop: '3em', color:'red'}}>No Events Found!</h1>
                 }
             </Container>
         )
