@@ -6,7 +6,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-
+import Sold from '../../Assets/images/sold.png'
 library.add(faTimesCircle)
 library.add(faCheckCircle)
 
@@ -117,9 +117,15 @@ class Card extends Component {
         const { arr, reserved, goings, notgoings } = this.state
         console.log(reserved,'reserved seats')
         return (
-            <div className='event-card' key={`${index}`}>
+            <div className='event-card' style={{border: `1px solid ${this.props.color}`}} key={`${index}`}>
                 <div className='event-card-img'>
                     <img src={image} />
+                    {
+                        reserved.indexOf(key) !== -1 &&
+                        <div className='event-card-sold'>
+                            <img src={Sold} />
+                        </div>
+                    }
                 </div>
                 <div className='event-card-title'>
                     <span>{title}</span>

@@ -57,7 +57,7 @@ class GoingEvent extends Component {
                 <h1>Going Events</h1>
                 {
                     goingEvents.map((items,index) =>{
-                        return <Card key={index} attendee={true} eventUid={index} goings={goingEvents} userEvent={items} checkEvent={'goingEvents'}/>
+                        return <Card key={index} color={'green'} attendee={true} eventUid={index} goings={goingEvents} userEvent={items} checkEvent={'goingEvents'}/>
                     })
                 }
                 {

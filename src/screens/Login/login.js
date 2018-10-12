@@ -25,6 +25,12 @@ class Login extends Component {
         user && this.props.history.push('/home')
     }
 
+    componentDidMount() {
+        swal({
+            showConfirmButton: false,
+            timer: 100
+        })
+    }
     // redirecting user to the signup Page
 
     signupPage() {
@@ -110,12 +116,16 @@ class Login extends Component {
     checkRole(user) {
         firebase.database().ref('/users/').on('value', (snapShot) => {
             console.log(snapShot.val())
-            if (!snapShot.val()[user]) {
-                console.log('nhi mila')
-                this.props.history.push('/role')
+            if (snapShot.val()) {
+                if (!snapShot.val()[user]) {
+                    console.log('nhi mila')
+                    this.props.history.push('/role')
+                } else {
+                    console.log('mil gaya')
+                    this.props.history.push('/home')
+                }
             } else {
-                console.log('mil gaya')
-                this.props.history.push('/home')
+                this.props.history.push('/role')
             }
         })
     }

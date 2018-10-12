@@ -115,7 +115,7 @@ class Details extends Component {
                                 role === 'attendee' &&
                                 totalSeats.length === totalReserved.length &&
                                 <span className='event-closed'>
-                                    <FontAwesomeIcon icon='times-circle' /> Closed
+                                    <FontAwesomeIcon icon='times-circle' /> Sold Out
                                 </span>
                             }
                         </div>
@@ -193,7 +193,6 @@ class Details extends Component {
                         {
                             role === 'attendee' &&
                             (
-
                                 totalSeats.length === totalReserved.length ?
                                     <div className='event-detail-btn'>
                                         <button disabled={'disabled'} style={{ opacity: '0.5' }}>SOLD</button>

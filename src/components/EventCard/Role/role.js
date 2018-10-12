@@ -16,6 +16,11 @@ class Role extends Component {
         this.addRole = this.addRole.bind(this)
     }
 
+    componentWillMount() {
+        const user = localStorage.getItem('userUid')
+        !user && this.props.history.push('/')
+    }
+
     logout() {                          //logout the user and clear the localStorage
         localStorage.setItem('user', '')
         this.props.history.push('/')
@@ -31,24 +36,31 @@ class Role extends Component {
                 swal.showLoading()
             },
         })
-        const obj = {
-            role,
-            userUid : user
-        }
-        role && 
-        firebase.database().ref('/users/'+user+'/userDetails/').push(obj)
-        .then(()=>{
+        if(!role){
             swal({
-                position: 'center',
-                type: 'success',
-                title: 'Done',
-                showConfirmButton: false,
-                timer: 1500
+                text: 'Something went wrong',
+                type: 'error'
             })
-            setTimeout(()=>{
-                this.props.history.push('/home')
-            },1500)
-        })
+        }else{
+            const obj = {
+                role,
+                userUid : user
+            }
+            role && 
+            firebase.database().ref('/users/'+user+'/userDetails/').push(obj)
+            .then(()=>{
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Done',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(()=>{
+                    this.props.history.push('/home')
+                },1500)
+            })
+        }
     }
 
     render() {

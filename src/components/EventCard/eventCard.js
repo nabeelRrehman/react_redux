@@ -7,6 +7,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import Sold from '../../Assets/images/sold.png'
+
 
 library.add(faTimesCircle)
 library.add(faCheckCircle)
@@ -189,9 +191,16 @@ class EventCard extends Component {
         const { attendee } = this.props
         const { goings, notgoings, arr, totalReserved, totalSeats, reserved } = this.state
         return (
-            <div className='event-card' key={`${index}`}>
+            <div className='event-card' style = {reserved.indexOf(key) !== -1 ? {opacity : '0.9'} : {opacity : '1'}} key={`${index}`}>
                 <div className='event-card-img'>
                     <img src={image} />
+                    {
+                        attendee &&
+                        reserved.indexOf(key) !== -1 &&
+                        <div className='event-card-sold'>
+                            <img src={Sold} />
+                        </div>
+                    }
                 </div>
                 <div className='event-card-title'>
                     <span>{title}</span>
@@ -266,10 +275,10 @@ class EventCard extends Component {
                     {
                         <Link to={`${'/details/'}${key}`} className={'link'}>Details</Link>
                     }
-                    <span><b>Ticket</b> : {!price && ticket}</span>
+                    <span><b>Ticket</b>:{!price && ticket}</span>
                     {
                         price &&
-                        <span><b>Rs : </b> {price && price}</span>
+                        <span><b>Rs:</b> {price && price}</span>
                     }
                 </div>
             </div>

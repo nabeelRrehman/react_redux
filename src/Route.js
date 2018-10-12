@@ -10,6 +10,7 @@ import Details from './components/EventCard/Details/details';
 import Buy from './components/addEvent/Buy/buy';
 import GoingEvent from './components/goingEvents/going';
 import NotGoingEvent from './components/notGoing/notGoing';
+import UserBuyEvent from './components/BuyEvents/buyEvents';
 
 
 class Routers extends Component {
@@ -24,8 +25,9 @@ class Routers extends Component {
                     <Route path='/role' component={Role} />
                     <Route path='/details/:id' component={Details} />
                     <Route path='/buy/:ticket' component={Buy} />
-                    <Route path='/goingEvents' component = {GoingEvent}/>
-                    <Route path = '/notGoingEvents' component = {NotGoingEvent}/>
+                    <Route path='/goingEvents' component={GoingEvent} />
+                    <Route path='/notGoingEvents' component={NotGoingEvent} />
+                    <Route path='/buyEvents' component={UserBuyEvent} />
                 </div>
             </Router>
         )

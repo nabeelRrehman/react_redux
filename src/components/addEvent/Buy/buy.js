@@ -30,7 +30,7 @@ class Buy extends Component {
         this.getReservedSeats()
     }
 
-    
+
     componentDidMount() {
         // console.log('id***',id)
 
@@ -66,7 +66,7 @@ class Buy extends Component {
                             const { list } = this.state
                             if (event.seats) {
                                 for (var i = Number(event.seats.from); i <= event.seats.to; i++) {
-                                    if(list.length !== (event.seats.to - event.seats.from)+1){
+                                    if (list.length !== (event.seats.to - event.seats.from) + 1) {
                                         list.push(i)
                                         this.setState({ list })
                                         console.log(list)
@@ -78,7 +78,7 @@ class Buy extends Component {
                 }
             }
             firebase.database().ref('/users/').on('child_added', (snapShot) => {
-    
+
                 for (var key in snapShot.val().buyEvents) {
                     if (key === this.props.match.params.ticket) {
                         firebase.database().ref('/users/' + snapShot.key + '/buyEvents/' + key + '/').on('child_added', (snapshot) => {
@@ -160,10 +160,10 @@ class Buy extends Component {
                                         title: 'Selected Seats Are Already Reserved'
                                     })
                                 } else {
-                                    if (array.length > selectedOption) {
+                                    if (array.length > selectedOption || array.length < selectedOption) {
                                         swal({
                                             type: 'error',
-                                            title: 'Dont have enough tickets'
+                                            title: 'Check Your Ticket Condition'
                                         })
                                     } else {
                                         if (Number(to) > Number(event.seats.to)) {
@@ -181,23 +181,29 @@ class Buy extends Component {
                                                         title: 'Successfully Buy Tickets'
                                                     })
                                                 })
-                                                this.getReservedSeats()
+                                            this.getReservedSeats()
                                             this.setState({ selectedOption: '', from: '', to: '', SelectedList: '' })
                                         }
                                     }
                                 }
                             } else {
-                                const obj = [...SelectedList]
-
-                                firebase.database().ref('/users/' + user + '/buyEvents/' + eventTicket + '/').push(obj)
-                                    .then(() => {
-                                        swal({
-                                            type: 'success',
-                                            title: 'Successfully Buy Tickets'
-                                        })
+                                if (SelectedList.length < Number(selectedOption)) {
+                                    swal({
+                                        type: 'error',
+                                        title: 'Check Your Tickets'
                                     })
+                                } else {
+                                    const obj = [...SelectedList]
+                                    firebase.database().ref('/users/' + user + '/buyEvents/' + eventTicket + '/').push(obj)
+                                        .then(() => {
+                                            swal({
+                                                type: 'success',
+                                                title: 'Successfully Buy Tickets'
+                                            })
+                                        })
                                     this.getReservedSeats()
-                                this.setState({ selectedOption: '', from: '', to: '', SelectedList: '' })
+                                    this.setState({ selectedOption: '', from: '', to: '', SelectedList: '' })
+                                }
                             }
                         }
                     }
@@ -207,6 +213,7 @@ class Buy extends Component {
     }
 
     selectTicket(item) {
+        const { from, to } = this.state
         const { SelectedList, selectedOption } = this.state
         const selectOpt = SelectedList.indexOf(item)
         if (SelectedList.length < selectedOption) {

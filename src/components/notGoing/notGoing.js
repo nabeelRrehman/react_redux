@@ -60,7 +60,7 @@ class NotGoingEvent extends Component {
                 <h1>Not Going Events</h1>
                 {
                     notGoingEvents.map((items, index) => {
-                        return <Card key={index} attendee={true} eventUid={index} notgoings={notGoingEvents} userEvent={items} />
+                        return <Card key={index} color={'red'} shadow={'red'} attendee={true} eventUid={index} notgoings={notGoingEvents} userEvent={items} />
                     })
                 }
                 {
