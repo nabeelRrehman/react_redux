@@ -4,8 +4,10 @@ import Anonymous from '../../Assets/images/user.png'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome } from '@fortawesome/free-solid-svg-icons'
+import { faTicketAlt } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faHome)
+library.add(faTicketAlt)
 
 class Container extends Component {
     constructor() {

@@ -22,6 +22,10 @@ class UserBuyEvent extends Component {
         })
     }
 
+    static getDerivedStateFromProps() {
+        console.log('working')
+    }
+
     componentDidMount() {
         swal({
             showConfirmButton: false,
@@ -39,6 +43,9 @@ class UserBuyEvent extends Component {
     render() {
         return (
             <Container logout={this.logout} profile_pic={this.props.profile_pic}>
+                <div>
+
+                </div>
             </Container>
         )
     }

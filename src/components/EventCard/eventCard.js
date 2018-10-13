@@ -40,6 +40,7 @@ class EventCard extends Component {
 
 
     getGoingEvents() {
+
         const { goings, notgoings, arr } = this.state
         const user = localStorage.getItem('userUid')
 
@@ -80,10 +81,6 @@ class EventCard extends Component {
                 this.setState({ notgoings })
             }
         })
-    }
-
-    componentWillUpdate(props, state) {
-        // this.reservedSeats()
     }
 
     reservedSeats() {

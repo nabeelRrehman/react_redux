@@ -28,6 +28,7 @@ class Routers extends Component {
                     <Route path='/goingEvents' component={GoingEvent} />
                     <Route path='/notGoingEvents' component={NotGoingEvent} />
                     <Route path='/buyEvents' component={UserBuyEvent} />
+                    {/* <Route path='' component={}/> */}
                 </div>
             </Router>
         )
