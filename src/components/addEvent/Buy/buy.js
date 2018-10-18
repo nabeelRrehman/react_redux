@@ -60,7 +60,8 @@ class Buy extends Component {
                             startTime: eventKey[key2].startTime,
                             endTime: eventKey[key2].endTime,
                             arrangement: eventKey[key2].arrangement,
-                            location: eventKey[key2].location
+                            location: eventKey[key2].location,
+                            userUid: eventKey[key2].userUid
                         }
                         this.setState({ event }, () => {
                             const { list } = this.state
@@ -69,7 +70,6 @@ class Buy extends Component {
                                     if (list.length !== (event.seats.to - event.seats.from) + 1) {
                                         list.push(i)
                                         this.setState({ list })
-                                        console.log(list)
                                     }
                                 }
                             }
@@ -305,6 +305,7 @@ class Buy extends Component {
                                                 {
                                                     list.map((items, index) => {
                                                         const { SelectedList, reservedSeats } = this.state
+                                                        console.log(event.userUid,'user uid')
                                                         return (
                                                             reservedSeats.indexOf(items) !== -1 ?
                                                                 <div key={index + '1'} style={{ color: 'white', backgroundColor: 'red' }}>{items}</div>
